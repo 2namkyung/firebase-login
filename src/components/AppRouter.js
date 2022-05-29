@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Auth from '../routes/Auth';
 import Home from '../routes/Home';
 
-export default function AppRouter() {
-  const [isLogin, setIsLogin] = useState(false);
-
+export default function AppRouter({ isLogin }) {
   return (
     <BrowserRouter>
       <Routes>
@@ -18,3 +17,11 @@ export default function AppRouter() {
     </BrowserRouter>
   );
 }
+
+AppRouter.propTypes = {
+  isLogin: PropTypes.bool,
+};
+
+AppRouter.defaultProps = {
+  isLogin: null,
+};
