@@ -1,5 +1,4 @@
 import {
-  createUserWithEmailAndPassword,
   GithubAuthProvider,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
@@ -11,8 +10,6 @@ import { authService } from '../firebase';
 export default function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [newAccount, setNewAccount] = useState(true);
-  const [error, setError] = useState('');
 
   const onChange = (event) => {
     const {
@@ -26,21 +23,14 @@ export default function Auth() {
     }
   };
 
-  const onSubmit = async (event) => {
-    event.preventDefault();
+  const login = async () => {
     try {
-      if (newAccount) {
-        await createUserWithEmailAndPassword(authService, email, password);
-      } else {
-        await signInWithEmailAndPassword(authService, email, password);
-      }
+      await signInWithEmailAndPassword(authService, email, password);
+      return true;
     } catch (err) {
-      setError(err.message);
+      alert(err);
+      return err;
     }
-  };
-
-  const toggleAccount = () => {
-    setNewAccount((prev) => !prev);
   };
 
   const onSocialClick = async (event) => {
@@ -56,42 +46,84 @@ export default function Auth() {
       provider = new GithubAuthProvider();
     }
 
-    await signInWithPopup(authService, provider);
+    try {
+      await signInWithPopup(authService, provider);
+      return true;
+    } catch (error) {
+      return error;
+    }
   };
 
   return (
-    <div>
-      <form onSubmit={onSubmit}>
-        <input
-          name="email"
-          type="text"
-          placeholder="Email"
-          required
-          value={email}
-          onChange={onChange}
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          required
-          value={password}
-          onChange={onChange}
-        />
-        <input type="submit" value={newAccount ? 'Create Account' : 'Log In'} />
-        {error}
-      </form>
-      <button type="button" onClick={toggleAccount}>
-        {newAccount ? 'Sign In' : 'Create Account'}
-      </button>
-      <div>
-        <button type="button" name="google" onClick={onSocialClick}>
-          Continue with Google
-        </button>
-        <button type="button" name="github" onClick={onSocialClick}>
-          Continue with Github
-        </button>
+    <figure className="h-screen flex bg-gray-100">
+      <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-1">
+        <blockquote className="text-2xl font-medium text-center">
+          <p className="text-lg font-semibold">Welcome to My-App</p>
+        </blockquote>
+
+        <div className="text-primary m-6">
+          <div className="flex items-center mt-3 justify-center">
+            <h1 className="text-2xl font-medium text-primary mt-4 mb-2">
+              Login to your account
+            </h1>
+          </div>
+
+          <span>Email</span>
+          <input
+            name="email"
+            type="text"
+            onChange={onChange}
+            placeholder="Username"
+            className="w-full p-2 text-primary border rounded-md outline-none text-sm transition duration-150 ease-in-out mb-4"
+          />
+          <span>Password</span>
+          <input
+            name="password"
+            type="password"
+            onChange={onChange}
+            placeholder="Password"
+            className="w-full p-2 text-primary border rounded-md outline-none text-sm transition duration-150 ease-in-out mb-4"
+          />
+          <div className="flex items-center mt-3 justify-center">
+            <button
+              type="button"
+              className="bg-blue-700 hover:bg-blue-500 py-2 px-4 text-md text-white rounded border border-blue focus:outline-none focus:border-black"
+              value="Login"
+              onClick={login}
+            >
+              Login
+            </button>
+          </div>
+          <div className="flex items-center mt-3 justify-center">
+            <button
+              type="button"
+              className="justify-center text-blue-500 hover:underline"
+            >
+              Need to register? Sign up for free
+            </button>
+          </div>
+          <div className="flex items-center mt-3 justify-center">
+            <button
+              type="button"
+              name="github"
+              className="bg-black hover:bg-gray-500 py-2 px-4 text-md text-white rounded border border-blue focus:outline-none focus:border-black"
+              value="Login"
+              onClick={onSocialClick}
+            >
+              Github
+            </button>
+            <button
+              type="button"
+              name="google"
+              className="bg-white hover:bg-gray-500 py-2 px-4 text-md text-black rounded border border-blue focus:outline-none focus:border-black"
+              value="Login"
+              onClick={onSocialClick}
+            >
+              Google
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+    </figure>
   );
 }

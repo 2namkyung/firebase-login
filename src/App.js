@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react';
 import AppRouter from './components/AppRouter';
 import { authService } from './firebase';
 
-import './styles/index.scss';
-
 export default function App() {
   const [init, setInit] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
